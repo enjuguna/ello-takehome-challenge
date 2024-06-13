@@ -12,9 +12,10 @@ function ReadingList({ readingList, onRemoveFromReadingList }) {
   const booksToDisplay = readingList.slice(startIndex, endIndex);
   const totalPages = Math.ceil(readingList.length / BOOKS_PER_PAGE);
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (event, newPage) => { 
     setCurrentPage(newPage);
   };
+
 
   return (
     <Paper elevation={1} sx={{ p: 2, mb: 2, backgroundColor: '#FFE6DC', borderRadius: 3 }}>
