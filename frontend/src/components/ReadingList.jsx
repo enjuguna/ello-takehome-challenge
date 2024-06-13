@@ -12,13 +12,12 @@ function ReadingList({ readingList, onRemoveFromReadingList }) {
   const booksToDisplay = readingList.slice(startIndex, endIndex);
   const totalPages = Math.ceil(readingList.length / BOOKS_PER_PAGE);
 
-  const handlePageChange = (event, newPage) => {
+  const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
   return (
-    <Paper elevation={1} sx={{ p: 2, mb: 2, backgroundColor: '#CFFAFA', borderRadius: 3 }}>
-      <Typography variant="h6" gutterBottom>Reading List</Typography>
+    <Paper elevation={1} sx={{ p: 2, mb: 2, backgroundColor: '#FFE6DC', borderRadius: 3 }}>
       <Grid container spacing={2}>
         {booksToDisplay.length > 0 ? (
           booksToDisplay.map((book) => (
