@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
-import { Container, Grid, CircularProgress, Typography, Pagination, Button, ButtonGroup, Box, AppBar, Toolbar } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import { Container, Grid, CircularProgress, Typography, Pagination, Button, ButtonGroup, Box, AppBar} from '@mui/material';
+import { Toaster, toast } from 'react-hot-toast';
 import SearchBar from './components/SearchBar';
 import BookCard from './components/BookCard';
 import ReadingList from './components/ReadingList';
 import { BOOKS_QUERY } from './graphql/queries';
+import logo from './logo.svg';
 
 const BOOKS_PER_PAGE = 15;
 
@@ -25,9 +26,20 @@ function App() {
   const { loading, error, data } = useQuery(BOOKS_QUERY);
   const booksSectionRef = useRef(null);
 
-  const handleAddToReadingList = (book) => !readingList.some((item) => item.title === book.title) && setReadingList([...readingList, book]);
-  const handleRemoveFromReadingList = (bookToRemove) => setReadingList(readingList.filter((book) => book.title !== bookToRemove.title));
+  const handleAddToReadingList = (book) => {
+    if (!readingList.some((item) => item.title === book.title)) {
+      setReadingList([...readingList, book]);
+      toast.success(`Added "${book.title}" to Reading List`); 
+    }
+  };
+
+  const handleRemoveFromReadingList = (bookToRemove) => {
+    setReadingList(readingList.filter((book) => book.title !== bookToRemove.title));
+    toast.error(`Removed "${bookToRemove.title}" from Reading List`);
+  };
+
   const handleFilterChange = (filter) => setSelectedFilter(filter);
+
 
   const filteredBooks = data?.books?.filter((book) => {
     if (searchTerm) return book.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -54,15 +66,33 @@ function App() {
   if (loading) return <CircularProgress />;
   if (error) return <p>Error loading books: {error.message}</p>;
 
+  function getCurrentYear() {
+    const now = new Date();
+    return now.getFullYear();
+  }
+  const currentYear = getCurrentYear();
+
   return (
     <div>
+      <Toaster position="top-center" reverseOrder={false} />
       <AppBar position="static"> 
       </AppBar>
       <Container maxWidth="md">
-        <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>Ello Books</Typography>
+      <img 
+            src={logo} 
+            alt="Ello Books Logo" 
+            style={{ 
+              height: 60, 
+              display: 'block', 
+              margin: '0 auto', 
+            }}  
+          />
+        <Typography variant="h5" align="left" color="#F76434" gutterBottom sx={{ fontWeight: 'bold', mb: 2 }}>Book Library</Typography>
         <SearchBar onSearch={setSearchTerm} onSelect={handleAddToReadingList} allBooks={data?.books || []} readingList={readingList} />
+            
 
-        <Box sx={{ my: 4 }}>
+        <Typography variant="h5" align="left" color="#F76434" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>Reading List</Typography>
+        <Box sx={{ my: 1 }}>
           <ReadingList readingList={readingList} onRemoveFromReadingList={handleRemoveFromReadingList} />
         </Box>
 
@@ -76,7 +106,7 @@ function App() {
 
         <Grid container spacing={2} alignItems="center" ref={booksSectionRef} sx={{ mt: 2 }}> 
           <Grid item xs={12}>
-            <Typography variant="h6" gutterBottom>All Books</Typography>
+            <Typography variant="h5" color="#F76434" gutterBottom sx={{ fontWeight: 'bold', mb: 1 }}>All Books</Typography>
             {totalPages > 1 && (<Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>Page {currentPage} of {totalPages}</Typography>)}
           </Grid>
         </Grid>
@@ -96,21 +126,31 @@ function App() {
         </Grid>
 
         {totalPages > 1 && (
-          <Pagination 
-            count={totalPages} 
-            page={currentPage} 
-            onChange={handlePageChange} 
-            sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}
-          />
-        )}
-        <Box sx={{ mt: 4, textAlign: 'center' }}>
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          sx={{
+            mt: 2,
+            display: 'flex',
+            justifyContent: 'center',
+            '& .MuiPaginationItem-page.Mui-selected': { 
+              backgroundColor: '#4AA088', 
+              color: 'white'             
+            },
+          }}
+        />
+      )}
+         <Box sx={{ bgcolor: '#CFFAFA', py: 2, mt: 4, textAlign: 'center' }}> 
         <Typography variant="body2" color="textSecondary">
-          Copyright &copy; 2024 Ello
+          
+          Copyright &copy; {currentYear}. Ello Book Library.
         </Typography>
       </Box>
 
       </Container>
-    </div> 
+    </div>
+     
   );
 }
 export default App;
