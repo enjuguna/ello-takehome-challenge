@@ -36,7 +36,7 @@ export const booksData = [
     'readingLevel': 'H'
   },
   {
-    'title': 'Happy Knight and the Magic Spell',
+    'title': 'Happy Knight and the Magic Spell - Casey Jones',
     'author': 'Casey Jones',
     'coverPhotoURL': 'assets/image6.webp',
     'readingLevel': 'C'
