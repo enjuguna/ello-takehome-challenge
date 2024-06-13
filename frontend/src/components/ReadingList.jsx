@@ -33,7 +33,7 @@ function ReadingList({ readingList, onRemoveFromReadingList }) {
           ))
         ) : (
           <Grid item xs={12}>
-            <Typography variant="body1">No books in reading list.</Typography>
+            <Typography variant="body1">No books saved yet, Find a great read and add it to the list.</Typography>
           </Grid>
         )}
       </Grid>
